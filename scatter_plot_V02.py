@@ -31,21 +31,22 @@ def create_scatter_plot(data, colors, markers):
 
     plt.xlabel('Time')
     plt.ylabel('Experiments')
-    plt.title('Scatter Plot of Timestamps by Experiment and Message Type')
+    plt.title('Queries and Mask Transfers of L2D2-C Agnets')
     
     if seen_labels:  # Check if any labels have been added to the legend
         plt.legend()
     
+    plt.savefig('scatter_plot_V12.png', format='png', dpi=300)  # Save the plot as a PNG image with 300 dpi resolution
     plt.show()
 
 
 
 
 def main():
-    main_folder = 'C:/Users/chper/OneDrive - Loughborough University/CoLLA_Paper_Preparation/Agent_Communication_Data_Plots/data/75_dropout/75_dropout'
+    main_folder = 'C:/Users/chper/OneDrive - Loughborough University/CoLLA_Paper_Preparation/Agent_Communication_Data_Plots/data/75_dropout/75_dropout/seed_4'
     csv_files = read_csv_files(main_folder)
 
-    all_data = [pd.read_csv(file) for file in csv_files]
+    all_data = [pd.read_csv(file, nrows=300) for file in csv_files]
 
     colors = {
         1: 'red',
