@@ -1,0 +1,64 @@
+import os
+import glob
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.markers as mmarkers
+
+def read_csv_files(main_folder):
+    all_files = []
+    for root, dirs, files in os.walk(main_folder):
+        for file in files:
+            if file.endswith(".csv") and "train-log" in file:
+                all_files.append(os.path.join(root, file))
+    return all_files
+
+def create_scatter_plot(data, colors, markers):
+    plt.figure(figsize=(15, 10))
+    seen_labels = set()  # Keep track of labels that have been added to the legend
+    
+    for i, experiment in enumerate(data):
+        for msg_type, group in experiment.groupby('Number'):
+            if len(group) > 0:
+                color = colors.get(msg_type, 'gray')  # Use a default color (gray) if msg_type is not in the colors dictionary
+                if msg_type not in colors:
+                    print(f"Warning: Unknown message type {msg_type} encountered. Using gray as the default color.")
+                label = f"Exp {i+1}: Msg Type {msg_type}"
+                if label not in seen_labels:
+                    seen_labels.add(label)
+                    plt.scatter(group['Timestamp'], [i] * len(group), c=color, marker=markers[i % len(markers)], label=label, alpha=0.8)
+                else:
+                    plt.scatter(group['Timestamp'], [i] * len(group), c=color, marker=markers[i % len(markers)], alpha=0.8)
+
+    plt.xlabel('Time')
+    plt.ylabel('Experiments')
+    plt.title('Scatter Plot of Timestamps by Experiment and Message Type')
+    
+    if seen_labels:  # Check if any labels have been added to the legend
+        plt.legend()
+    
+    plt.show()
+
+
+
+
+def main():
+    main_folder = 'C:/Users/chper/OneDrive - Loughborough University/CoLLA_Paper_Preparation/Agent_Communication_Data_Plots/data/75_dropout/75_dropout'
+    csv_files = read_csv_files(main_folder)
+
+    all_data = [pd.read_csv(file) for file in csv_files]
+
+    colors = {
+        1: 'red',
+        2: 'blue',
+        3: 'green',
+        6: 'yellow',
+        # Add more colors for additional message types if needed
+    }
+
+    markers = list(mmarkers.MarkerStyle.markers.keys())
+    markers = [m for m in markers if m not in ['.', ',']]  # Exclude '.' and ',' as they are too small
+
+    create_scatter_plot(all_data, colors, markers)
+
+if __name__ == "__main__":
+    main()
