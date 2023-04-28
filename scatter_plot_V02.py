@@ -20,15 +20,21 @@ def create_scatter_plot(data, colors, markers):
     plt.figure(figsize=(15, 10))
     seen_labels = set()  # Keep track of labels that have been added to the legend
     
+    msg_type_codes = {0: "IDQ", 1: "QR", 2: "MR", 3: "MTR"}
+
     min_Timestamp = min([datetime.strptime(t, "%Y-%m-%d %H:%M:%S") for experiment in data for t in experiment['Timestamp']])
     
     for i, experiment in enumerate(data):
+        # Filter rows where the 'Number' value is greater than 3
+        experiment = experiment[experiment['Number'] <= 3]
+        
         for msg_type, group in experiment.groupby('Number'):
             if len(group) > 0:
                 color = colors.get(msg_type, 'gray')  # Use a default color (gray) if msg_type is not in the colors dictionary
                 if msg_type not in colors:
                     print(f"Warning: Unknown message type {msg_type} encountered. Using gray as the default color.")
-                label = f"Exp {i+1}: Msg Type {msg_type}"
+                msg_code = msg_type_codes.get(msg_type, "Unknown")
+                label = f"Agent {i+1}: Msg Type: {msg_code}"
                 if label not in seen_labels:
                     seen_labels.add(label)
                     # Convert string to datetime, subtract the minimum Timestamp, convert to seconds, and plot it
@@ -43,8 +49,10 @@ def create_scatter_plot(data, colors, markers):
     if seen_labels:  # Check if any labels have been added to the legend
         plt.legend()
     
-    plt.savefig('scatter_plot.png', format='png', dpi=300)  # Save the plot as a PNG image with 300 dpi resolution
+    plt.savefig('scatter_plot_W18.png', format='png', dpi=300)  # Save the plot as a PNG image with 300 dpi resolution
     plt.show()
+
+
 
 
 
@@ -61,10 +69,10 @@ def main():
     all_data = [pd.read_csv(file, nrows=300) for file in csv_files]
 
     colors = {
+        0: 'yellow',
         1: 'red',
         2: 'blue',
         3: 'green',
-        6: 'yellow',
         # Add more colors for additional message types if needed
     }
 
