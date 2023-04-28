@@ -12,9 +12,15 @@ def read_csv_files(main_folder):
                 all_files.append(os.path.join(root, file))
     return all_files
 
+from datetime import timedelta
+
+from datetime import datetime
+
 def create_scatter_plot(data, colors, markers):
     plt.figure(figsize=(15, 10))
     seen_labels = set()  # Keep track of labels that have been added to the legend
+    
+    min_Timestamp = min([datetime.strptime(t, "%Y-%m-%d %H:%M:%S") for experiment in data for t in experiment['Timestamp']])
     
     for i, experiment in enumerate(data):
         for msg_type, group in experiment.groupby('Number'):
@@ -25,19 +31,25 @@ def create_scatter_plot(data, colors, markers):
                 label = f"Exp {i+1}: Msg Type {msg_type}"
                 if label not in seen_labels:
                     seen_labels.add(label)
-                    plt.scatter(group['Timestamp'], [i] * len(group), c=color, marker=markers[i % len(markers)], label=label, alpha=0.8)
+                    # Convert string to datetime, subtract the minimum Timestamp, convert to seconds, and plot it
+                    plt.scatter([(datetime.strptime(t, "%Y-%m-%d %H:%M:%S") - min_Timestamp).total_seconds() for t in group['Timestamp']], [i] * len(group), c=color, marker=markers[i % len(markers)], label=label, alpha=0.8)
                 else:
-                    plt.scatter(group['Timestamp'], [i] * len(group), c=color, marker=markers[i % len(markers)], alpha=0.8)
+                    plt.scatter([(datetime.strptime(t, "%Y-%m-%d %H:%M:%S") - min_Timestamp).total_seconds() for t in group['Timestamp']], [i] * len(group), c=color, marker=markers[i % len(markers)], alpha=0.8)
 
-    plt.xlabel('Time')
+    plt.xlabel('Time (seconds)')
     plt.ylabel('Experiments')
-    plt.title('Queries and Mask Transfers of L2D2-C Agnets')
+    plt.title('Scatter Plot of Timestamps by Experiment and Message Type')
     
     if seen_labels:  # Check if any labels have been added to the legend
         plt.legend()
     
-    plt.savefig('scatter_plot_V12.png', format='png', dpi=300)  # Save the plot as a PNG image with 300 dpi resolution
+    plt.savefig('scatter_plot.png', format='png', dpi=300)  # Save the plot as a PNG image with 300 dpi resolution
     plt.show()
+
+
+
+
+
 
 
 
