@@ -21,6 +21,7 @@ def create_scatter_plot(data, colors, markers):
     seen_labels = set()  # Keep track of labels that have been added to the legend
     
     msg_type_codes = {0: "IDQ", 1: "QR", 2: "MR", 3: "MTR"}
+    marker = markers[0]  # Use the same marker shape for all experiments
 
     min_Timestamp = min([datetime.strptime(t, "%Y-%m-%d %H:%M:%S") for experiment in data for t in experiment['Timestamp']])
     
@@ -34,13 +35,13 @@ def create_scatter_plot(data, colors, markers):
                 if msg_type not in colors:
                     print(f"Warning: Unknown message type {msg_type} encountered. Using gray as the default color.")
                 msg_code = msg_type_codes.get(msg_type, "Unknown")
-                label = f"Agent {i+1}: Msg Type: {msg_code}"
+                label = f"Msg Type {msg_code}"
                 if label not in seen_labels:
                     seen_labels.add(label)
                     # Convert string to datetime, subtract the minimum Timestamp, convert to seconds, and plot it
-                    plt.scatter([(datetime.strptime(t, "%Y-%m-%d %H:%M:%S") - min_Timestamp).total_seconds() for t in group['Timestamp']], [i] * len(group), c=color, marker=markers[i % len(markers)], label=label, alpha=0.8)
+                    plt.scatter([(datetime.strptime(t, "%Y-%m-%d %H:%M:%S") - min_Timestamp).total_seconds() for t in group['Timestamp']], [i] * len(group), c=color, marker=marker, label=label, alpha=0.8)
                 else:
-                    plt.scatter([(datetime.strptime(t, "%Y-%m-%d %H:%M:%S") - min_Timestamp).total_seconds() for t in group['Timestamp']], [i] * len(group), c=color, marker=markers[i % len(markers)], alpha=0.8)
+                    plt.scatter([(datetime.strptime(t, "%Y-%m-%d %H:%M:%S") - min_Timestamp).total_seconds() for t in group['Timestamp']], [i] * len(group), c=color, marker=marker, alpha=0.8)
 
     plt.xlabel('Time (seconds)')
     plt.ylabel('Experiments')
@@ -49,8 +50,9 @@ def create_scatter_plot(data, colors, markers):
     if seen_labels:  # Check if any labels have been added to the legend
         plt.legend()
     
-    plt.savefig('scatter_plot_W18.png', format='png', dpi=300)  # Save the plot as a PNG image with 300 dpi resolution
+    plt.savefig('scatter_plot_LATEST.png', format='png', dpi=300)  # Save the plot as a PNG image with 300 dpi resolution
     plt.show()
+
 
 
 
