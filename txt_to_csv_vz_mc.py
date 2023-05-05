@@ -15,11 +15,15 @@ def process_file(file_path):
             for line in input_file:
                 timestamp = re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', line)
                 length = re.search(r'length (\d+)', line)
+                sendingIP = re.search(r"'(\d+\.\d+\.\d+\.\d+)', (\d+)", line)
                 number = re.search(r"'(\d+\.\d+\.\d+\.\d+)', \d+, (\d+)", line)
                 if timestamp and length and number:
-                    writer.writerow([timestamp.group(), length.group(1), number.group(2)])
+                    sendingIP_value = int(sendingIP.group(2))
+                    if sendingIP_value not in [29512, 29513]:
+                        if "Sending" in line and not (line.rstrip().endswith("29513") or line.rstrip().endswith("29512")):
+                            writer.writerow([timestamp.group(), length.group(1), number.group(2)])
 
-main_folder_path = 'data'
+main_folder_path = 'new_data'
 file_paths = []
 for folder_path, subfolders, file_names in os.walk(main_folder_path):
     for file_name in file_names:

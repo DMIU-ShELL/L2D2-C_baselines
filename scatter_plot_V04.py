@@ -10,7 +10,7 @@ def load_data(folder_path):
         for file in files:
             if "train-log" in file and file.endswith(".csv"):
                 file_path = os.path.join(subdir, file)
-                data = pd.read_csv(file_path, nrows=1500)  # Read only the first 300 rows
+                data = pd.read_csv(file_path)  # Read only the first 300 rows
                 all_data.append(data)
     return all_data
 
@@ -52,7 +52,7 @@ def create_scatter_plot(all_data, colors, markers):
 
     # Create custom legend
     legend_handles = [mpatches.Patch(color=colors[msg_type], label=f'Msg Type: {msg_type_codes[msg_type]}') for msg_type in unique_msg_types]
-    ax.legend(handles=legend_handles, title='Message Types', loc='upper left')
+    ax.legend(handles=legend_handles, title='Message Types', loc='upper left',  borderaxespad=0.)
 
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Agent')
@@ -61,7 +61,7 @@ def create_scatter_plot(all_data, colors, markers):
     plt.grid(True)
     plt.title('Agent Communication Scatter Plot')
     plt.tight_layout()
-    plt.savefig('scatter_plotV13.png')
+    plt.savefig('scatter_plot_new_data_75_dropout_seed_1d.png')
     plt.show()
 
 
@@ -79,10 +79,16 @@ def create_scatter_plot(all_data, colors, markers):
 
 
 def main():
-    main_folder = 'C:/Users/chper/OneDrive - Loughborough University/CoLLA_Paper_Preparation/Agent_Communication_Data_Plots/data/baseline/baseline/seed_4'
+    main_folder = 'C:/Users/chper/OneDrive - Loughborough University/CoLLA_Paper_Preparation/Agent_Communication_Data_Plots/new_data_b/75_dropout_seed_1/seed_1'
     #csv_files = read_csv_files(main_folder)
 
     all_data = load_data(main_folder)
+    print(all_data)
+    print(type(all_data))
+    print(len(all_data))
+    print(type(all_data[0]))
+    print(len(all_data[0]))
+    
 
     #all_data = [pd.read_csv(file) for file in csv_files]
 
