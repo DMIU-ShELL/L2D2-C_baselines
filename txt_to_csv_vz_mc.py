@@ -23,7 +23,7 @@ def process_file(file_path):
                         if "Sending" in line and not (line.rstrip().endswith("29513") or line.rstrip().endswith("29512")):
                             writer.writerow([timestamp.group(), length.group(1), number.group(2)])
 
-main_folder_path = 'new_data'
+main_folder_path = 'final_final_data'
 file_paths = []
 for folder_path, subfolders, file_names in os.walk(main_folder_path):
     for file_name in file_names:

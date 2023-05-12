@@ -41,7 +41,7 @@ def get_all_csv_files(directory, csv_files=None):
 
     return csv_files
 
-input_directory = 'new_data_b/95_dropout_seed_1'  # Replace with the path to your main directory
+input_directory = 'final_data/95_dropout'  # Replace with the path to your main directory
 average_output_file = os.path.join(input_directory, 'average_message_type_counts.csv')
 
 # Initialize a dictionary to store the aggregated count of unique message types
